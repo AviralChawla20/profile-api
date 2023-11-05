@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask_cors import CORS  # Import CORS extension
+
+CORS(app)
 
 app = Flask(__name__)
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "mysql+pymysql://sql12647981:XM51KVKzDA@sql12.freemysqlhosting.net:3306/sql12647981"
-
-CORS(app)
 
 db = SQLAlchemy(app)
 
@@ -36,17 +36,15 @@ class User(db.Model):
 def user_profile():
     if request.method == "GET":
         user_email = request.args.get("email")
+        print("Received email:", user_email)
         user = User.query.filter_by(email=user_email).first()
         if user:
-            # Split the "name" into "First Name" and "Last Name"
-            first_name, last_name = user.name.split() if user.name else ("", "")
             user_data = {
                 "id": user.id,
                 "created_at": user.created_at,
                 "updated_at": user.updated_at,
                 "deleted_at": user.deleted_at,
-                "firstName": first_name,
-                "lastName": last_name,
+                "name": user.name,
                 "email": user.email,
                 "password": user.password,
                 "college_name": user.college_name,
@@ -68,10 +66,7 @@ def user_profile():
         user_email = data.get("email")
         user = User.query.filter_by(email=user_email).first()
         if user:
-            # Merge "firstName" and "lastName" into "name"
-            first_name = data.get("firstName")
-            last_name = data.get("lastName")
-            user.name = f"{first_name} {last_name}"
+            user.name = data.get("name")
             user.phone_number = data.get("phone_number")
             user.college_name = data.get("college_name")
             user.gender = data.get("gender")
