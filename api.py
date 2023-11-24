@@ -80,6 +80,7 @@ def get_user_profile(email: str):
             "name": user.name,
             "email": user.email,
             "phone_number": user.phone_number,
+            "college_name": user.college_name,
             "gender": user.gender,
             "course": user.course,
             "specialization": user.specialization,
